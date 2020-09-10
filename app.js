@@ -1,6 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 // eslint-disable-next-line no-unused-vars
 const ejs = require("ejs");
 
@@ -15,10 +17,13 @@ mongoose.connect("mongodb://localhost:27017/userDB", {
     useUnifiedTopology: true,
 });
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
     email: String,
     password: String,
-};
+});
+
+const secret = "Thisisourlittlesecret.";
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
 
 const User = mongoose.model("User", userSchema);
 
